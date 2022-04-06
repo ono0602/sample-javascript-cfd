@@ -1,20 +1,14 @@
 version: 2.1
-
-workflows:
-  test-deploy:
-    jobs:
-      - test
-
+orbs:
+  node: circleci/node@4.7.0
 jobs:
-  test:
-    docker:
-      - image: cimg/node:17.8.0
+  build:
+    executor:
+      name: node/default
+      tag: '10.4'
     steps:
       - checkout
-      - run:
-          name: Install dependency
-          command: npm install
-      - run:
-          name: Run Tests
-          command: npm run test
-      - run: node --version
+      - node/with-cache:
+          steps:
+            - run: npm install
+      - run: npm run test
