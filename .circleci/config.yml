@@ -1,14 +1,27 @@
 version: 2.1
-orbs:
-  node: circleci/node@4.7.0
-jobs:
-  build:
-    executor:
-      name: node/default
-      tag: '10.4'
+
+commands:
+  test:
+    parameters:
+      to:
+        default: 'world'
+        type: string
     steps:
+      - run: echo 'hello <<parameters.to>>'
+
+jobs:
+  my-test:
+    docker:
+      - image: cimg/node:17.8.0
+    steps:
+      - test
       - checkout
-      - node/with-cache:
-          steps:
-            - run: npm install
-      - run: npm run test
+      - run:
+          command: |
+            echo Running test
+      - run: node --version
+
+workflows:
+  my-workflow:
+    jobs:
+      - my-test
